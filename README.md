@@ -1,7 +1,7 @@
 # 🏦 Banking & Finance REST API
 
 <p align="center">
-  A secure, RESTful backend for a modern online electronics store.
+  A secure, RESTful backend for a modern Banking & Finance Rest Apis.
 </p>
 
 <p align="center">
