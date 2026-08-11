@@ -28,6 +28,7 @@
 
 A secure and feature-rich banking REST API built with Spring Boot 3 and JWT authentication. The project supports user registration, login, and a full set of banking operations including account management, deposits, withdrawals, and transfers. All financial transactions are tracked and securely protected with stateless JWT-based authorization.
 
+
 ## INTRODUCTION
 
 Secure-Banking-api is a backend banking system that manages users, accounts, and transactions. It delivers a robust authentication mechanism, RESTful endpoints for all core banking actions, and comprehensive documentation through Swagger/OpenAPI. The codebase is organized for clarity and maintainability with clear separation of concerns between controllers, services, DTOs, and entities.
@@ -223,13 +224,13 @@ Contributions are welcome! To propose enhancements or fixes:
 
 ---
 
-## License
-
-This repository is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
-
 ## 👤 Author and Developed by
 **Sanoj Kumar Kushwaha**  
 4th Year Computer Science Student  
 GitHub: https://github.com/sanojkushwaha
 
 ---
+
+## License
+
+This repository is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
