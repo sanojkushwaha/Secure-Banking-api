@@ -1,247 +1,231 @@
 # 🏦 Banking & Finance REST API
 
-A production-ready RESTful Banking API built with **Spring Boot 3**, **Spring Security**, and **JWT Authentication**.
+<p align="center">
+  A secure, RESTful backend for a modern online electronics store.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java 25">
+  <img src="https://img.shields.io/badge/Spring%20Boot-4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white" alt="Spring Boot 4">
+  <img src="https://img.shields.io/badge/MySQL-8+-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
+  <img src="https://img.shields.io/badge/API-OpenAPI%203.1-6BA539?style=for-the-badge&logo=swagger&logoColor=white" alt="OpenAPI 3.1">
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#api-reference">API reference</a> ·
+  <a href="#documentation">Swagger UI</a> ·
+<a href="#security">Security</a>
+</p>
+
+<p align="center">
+  <a href="http://localhost:9090/api/swagger-ui/index.html">
+    <img src="https://img.shields.io/badge/Open%20Swagger%20UI-85EA2D?style=for-the-badge&logo=swagger&logoColor=black" alt="Open Swagger UI">
+  </a>
+</p>
+
+## Overview
+
+A secure and feature-rich banking REST API built with Spring Boot 3 and JWT authentication. The project supports user registration, login, and a full set of banking operations including account management, deposits, withdrawals, and transfers. All financial transactions are tracked and securely protected with stateless JWT-based authorization.
+
+## INTRODUCTION
+
+Secure-Banking-api is a backend banking system that manages users, accounts, and transactions. It delivers a robust authentication mechanism, RESTful endpoints for all core banking actions, and comprehensive documentation through Swagger/OpenAPI. The codebase is organized for clarity and maintainability with clear separation of concerns between controllers, services, DTOs, and entities.
+
+> [!NOTE]
+> Swagger UI and interactive API docs are available at `http://localhost:8080/swagger-ui.html` after running the application.
 
 ---
 
-## 📋 Table of Contents
-- [Prerequisites](#prerequisites)
-- [Project Structure](#project-structure)
-- [How to Run (IntelliJ IDEA)](#how-to-run-intellij-idea)
-- [API Endpoints](#api-endpoints)
-- [Testing with Swagger UI](#testing-with-swagger-ui)
-- [Switch to MySQL](#switch-to-mysql)
-- [GitHub Deployment](#github-deployment)
-- [Tech Stack](#tech-stack)
+## Features
+
+- **User Registration & Authentication**
+  Register new users and authenticate existing ones. JWT tokens are issued on successful login for stateless security.
+
+- **Account Management**
+  Each user owns a unique account; admins can view all accounts.
+
+- **Transactions**
+  Supports deposits, withdrawals, and transfers between accounts, with a complete transaction log.
+
+- **Role-Based Access Control**
+  Users see only their own data; admins have system-wide visibility.
+
+- **Exception Handling**
+  All endpoints return consistent, structured responses. Errors are handled globally.
+
+- **Secure by Default**
+  All non-auth routes require a valid JWT token; passwords use BCrypt hashing.
+
+- **Interactive API Docs**
+  OpenAPI (Swagger) integration for testing and exploring endpoints.
 
 ---
 
-## ✅ Prerequisites
+## Requirements
 
-Before running the project, make sure you have installed:
-
-| Tool | Version | Download |
-|------|---------|----------|
-| **Java JDK** | 17 or higher | https://adoptium.net |
-| **Maven** | 3.8+ | https://maven.apache.org (or use IntelliJ's bundled Maven) |
-| **IntelliJ IDEA** | Community or Ultimate | https://www.jetbrains.com/idea |
-| **Git** | Latest | https://git-scm.com |
-
-> ⚠️ MySQL is **NOT required**. The project uses **H2 in-memory database** by default — works out of the box!
-
-### IntelliJ IDEA Setup
-1. Open IntelliJ → `File` → `Settings` → `Plugins` → Install **Lombok Plugin**
-2. Go to `Settings` → `Build` → `Compiler` → `Annotation Processors` → ✅ Enable annotation processing
-3. Make sure your **Project SDK** is set to Java 17: `File` → `Project Structure` → `SDK`
+- Java 17 or higher
+- Maven (for building the project)
+- No external database required (H2 in-memory DB is used for development and testing)
 
 ---
 
-## 📁 Project Structure
+## Installation
 
+Follow the steps below to get the API running locally:
+
+```steps
+1. Clone the repository | git clone https://github.com/sanojkushwaha/Secure-Banking-api.git
+2. Navigate to the project folder | cd Secure-Banking-api
+3. Build the project using Maven | mvn clean install
+4. Run the application | mvn spring-boot:run
 ```
-banking-api/
-├── pom.xml                          ← Maven dependencies
-└── src/
-    ├── main/
-    │   ├── java/com/banking/
-    │   │   ├── BankingApiApplication.java     ← App entry point
-    │   │   ├── config/
-    │   │   │   ├── SecurityConfig.java        ← Spring Security setup
-    │   │   │   └── SwaggerConfig.java         ← Swagger/OpenAPI setup
-    │   │   ├── controller/
-    │   │   │   ├── AuthController.java        ← Register & Login
-    │   │   │   └── AccountController.java     ← Account & Transactions
-    │   │   ├── dto/
-    │   │   │   ├── request/
-    │   │   │   │   ├── RegisterRequest.java
-    │   │   │   │   ├── LoginRequest.java
-    │   │   │   │   └── TransactionRequest.java
-    │   │   │   └── response/
-    │   │   │       ├── ApiResponse.java        ← Generic API wrapper
-    │   │   │       ├── AuthResponse.java
-    │   │   │       ├── AccountResponse.java
-    │   │   │       └── TransactionResponse.java
-    │   │   ├── entity/
-    │   │   │   ├── User.java                  ← User table
-    │   │   │   ├── Account.java               ← Account table
-    │   │   │   └── Transaction.java           ← Transaction table
-    │   │   ├── enums/
-    │   │   │   ├── Role.java                  ← ROLE_USER, ROLE_ADMIN
-    │   │   │   └── TransactionType.java       ← DEPOSIT, WITHDRAWAL, TRANSFER
-    │   │   ├── exception/
-    │   │   │   ├── GlobalExceptionHandler.java ← Centralized error handling
-    │   │   │   ├── ResourceNotFoundException.java
-    │   │   │   ├── InsufficientFundsException.java
-    │   │   │   └── DuplicateResourceException.java
-    │   │   ├── repository/
-    │   │   │   ├── UserRepository.java
-    │   │   │   ├── AccountRepository.java
-    │   │   │   └── TransactionRepository.java
-    │   │   ├── security/
-    │   │   │   ├── filter/
-    │   │   │   │   └── JwtAuthenticationFilter.java ← Validates JWT on each request
-    │   │   │   └── service/
-    │   │   │       └── JwtService.java              ← Generate & validate tokens
-    │   │   └── service/
-    │   │       ├── AuthService.java           ← Interface
-    │   │       ├── AccountService.java        ← Interface
-    │   │       └── impl/
-    │   │           ├── AuthServiceImpl.java   ← Auth business logic
-    │   │           ├── AccountServiceImpl.java ← Banking business logic
-    │   │           └── UserDetailsServiceImpl.java ← Spring Security user loader
-    │   └── resources/
-    │       └── application.properties        ← App configuration
-    └── test/
-        ├── java/com/banking/
-        │   └── BankingApiApplicationTests.java
-        └── resources/
-            └── application-test.properties
-```
+
+> [!TIP]
+> After startup, visit `http://localhost:8080/swagger-ui.html` to test the API interactively.
 
 ---
 
-## 🚀 How to Run (IntelliJ IDEA)
+## Usage
 
-### Step 1 — Open the Project
-```
-File → Open → Select the 'banking-api' folder → Click OK
-```
+The API exposes endpoints for registration, login, accounts, and transactions. Protected routes require a valid JWT in the `Authorization` header.
 
-### Step 2 — Wait for Maven to Download Dependencies
-- IntelliJ will auto-detect `pom.xml` and download all dependencies
-- Watch the progress bar at the bottom right
-- This takes 1-3 minutes on first run
+### Authentication Endpoints
 
-### Step 3 — Run the Application
-- Open `BankingApiApplication.java`
-- Click the ▶️ green **Run** button next to the `main` method
-- Or press `Shift + F10`
+#### Register a New User (POST /api/auth/register)
 
-### Step 4 — Verify it Started
-Look for this in the console:
-```
-╔══════════════════════════════════════════════════╗
-║       Banking API Started Successfully!          ║
-║  Swagger UI  : http://localhost:8080/swagger-ui.html  ║
-║  H2 Console  : http://localhost:8080/h2-console       ║
-╚══════════════════════════════════════════════════╝
-```
+Registers a new user and creates a bank account automatically.
 
-### Step 5 — Open Swagger UI
-Go to: **http://localhost:8080/swagger-ui.html**
-
----
-
-## 📌 API Endpoints
-
-### 🔓 Public (No token required)
-| Method | URL | Description |
-|--------|-----|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login and get JWT |
-
-### 🔐 Protected (JWT required)
-| Method | URL | Description |
-|--------|-----|-------------|
-| GET | `/api/accounts/me` | Get my account details |
-| POST | `/api/accounts/deposit` | Deposit money |
-| POST | `/api/accounts/withdraw` | Withdraw money |
-| POST | `/api/accounts/transfer` | Transfer to another account |
-| GET | `/api/accounts/transactions` | Transaction history (paginated) |
-| GET | `/api/accounts/{accountNumber}` | Get account by number **(ADMIN only)** |
-
----
-
-## 🧪 Testing with Swagger UI
-
-### 1. Register a user
-```json
-POST /api/auth/register
+```api
 {
-  "fullName": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "phoneNumber": "9876543210"
+    "title": "Register User",
+    "description": "Creates a new user and associated bank account. Returns a JWT token.",
+    "method": "POST",
+    "baseUrl": "http://localhost:8080",
+    "endpoint": "/api/auth/register",
+    "headers": [],
+    "bodyType": "json",
+    "requestBody": "{\n  \"fullName\": \"Jane Doe\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"securePass123\",\n  \"phoneNumber\": \"1234567890\"\n}",
+    "responses": {
+        "201": {
+            "description": "Registration successful",
+            "body": "{\n  \"success\": true,\n  \"message\": \"Registration successful! Your bank account has been created.\",\n  \"data\": {\n    \"token\": \"<JWT>\",\n    \"tokenType\": \"Bearer\",\n    \"email\": \"jane@example.com\",\n    \"fullName\": \"Jane Doe\",\n    \"role\": \"ROLE_USER\"\n  },\n  \"timestamp\": \"2024-01-01T10:00:00\"\n}"
+        },
+        "400": {
+            "description": "Validation error or duplicate resource",
+            "body": "{\n  \"success\": false,\n  \"message\": \"Email is already registered\",\n  \"timestamp\": \"2024-01-01T10:00:00\"\n}"
+        }
+    }
 }
 ```
 
-### 2. Login to get token
-```json
-POST /api/auth/login
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-Copy the `token` value from the response.
+#### Login (POST /api/auth/login)
 
-### 3. Authorize in Swagger
-- Click **Authorize** button (top right of Swagger UI)
-- Enter: `Bearer <paste-your-token-here>`
-- Click Authorize
+Authenticates a user and returns a JWT token.
 
-### 4. Deposit money
-```json
-POST /api/accounts/deposit
+```api
 {
-  "amount": 5000.00,
-  "description": "Initial deposit"
-}
-```
-
-### 5. Transfer money
-```json
-POST /api/accounts/transfer
-{
-  "amount": 1000.00,
-  "targetAccountNumber": "1234567890",
-  "description": "Payment"
+    "title": "Login",
+    "description": "Authenticates with email and password. Returns a JWT token valid for 24 hours.",
+    "method": "POST",
+    "baseUrl": "http://localhost:8080",
+    "endpoint": "/api/auth/login",
+    "headers": [],
+    "bodyType": "json",
+    "requestBody": "{\n  \"email\": \"jane@example.com\",\n  \"password\": \"securePass123\"\n}",
+    "responses": {
+        "200": {
+            "description": "Login successful",
+            "body": "{\n  \"success\": true,\n  \"message\": \"Login successful!\",\n  \"data\": {\n    \"token\": \"<JWT>\",\n    \"tokenType\": \"Bearer\",\n    \"email\": \"jane@example.com\",\n    \"fullName\": \"Jane Doe\",\n    \"role\": \"ROLE_USER\"\n  },\n  \"timestamp\": \"2024-01-01T10:00:00\"\n}"
+        },
+        "401": {
+            "description": "Invalid credentials",
+            "body": "{\n  \"success\": false,\n  \"message\": \"Invalid email or password\",\n  \"timestamp\": \"2024-01-01T10:00:00\"\n}"
+        }
+    }
 }
 ```
 
-### 6. View transaction history
+### Account Endpoints
+
+> [!IMPORTANT]
+> All account and transaction endpoints require an `Authorization: Bearer <token>` header.
+
+#### Get My Account (GET /api/accounts/me)
+
+Returns account details for the logged-in user.
+
+```api
+{
+    "title": "Get My Account",
+    "description": "Returns the bank account details of the logged-in user.",
+    "method": "GET",
+    "baseUrl": "http://localhost:8080",
+    "endpoint": "/api/accounts/me",
+    "headers": [
+        {
+            "key": "Authorization",
+            "value": "Bearer <token>",
+            "required": true
+        }
+    ],
+    "bodyType": "none",
+    "responses": {
+        "200": {
+            "description": "Account details",
+            "body": "{\n  \"success\": true,\n  \"message\": \"Account details retrieved successfully.\",\n  \"data\": {\n    \"id\": 1,\n    \"accountNumber\": \"1234567890\",\n    \"balance\": 1000.00,\n    \"ownerName\": \"Jane Doe\",\n    \"ownerEmail\": \"jane@example.com\",\n    \"createdAt\": \"2024-01-01T10:00:00\"\n  },\n  \"timestamp\": \"2024-01-01T10:00:00\"\n}"
+        },
+        "401": {
+            "description": "Unauthorized",
+            "body": "{\n  \"success\": false,\n  \"message\": \"JWT token missing or invalid\",\n  \"timestamp\": \"2024-01-01T10:00:00\"\n}"
+        }
+    }
+}
 ```
-GET /api/accounts/transactions?page=0&size=10
-```
+
+### Transaction Endpoints
+
+#### Deposit, Withdraw, and Transfer
+
+Initiate deposits, withdrawals, or transfers by POSTing to `/api/accounts/deposit`, `/api/accounts/withdraw`, or `/api/accounts/transfer` respectively. Provide transaction details in the request body.
+
+> [!TIP]
+> See Swagger UI for detailed request/response samples and try out endpoints directly.
 
 ---
 
-## 🗄️ Switch to MySQL (Production)
+## Configuration
 
-1. Create a MySQL database:
-```sql
-CREATE DATABASE banking_db;
-```
+- **Application Properties**
+  The main application configuration is found in `src/main/resources/application.properties`.
+  For test-specific configuration, see `src/test/resources/application-test.properties`.
 
-2. In `application.properties`, comment out the H2 section and uncomment MySQL:
-```properties
-# Comment these H2 lines:
-# spring.datasource.url=jdbc:h2:mem:bankingdb...
+- **Security**
+  Public API routes: `/api/auth/**`, `/swagger-ui/**`, `/h2-console/**`
+  All other endpoints are protected and require a JWT.
 
-# Uncomment these MySQL lines:
-spring.datasource.url=jdbc:mysql://localhost:3306/banking_db?createDatabaseIfNotExist=true
-spring.datasource.username=root
-spring.datasource.password=your_password
-```
-
-----
-
-## 🛠️ Tech Stack
-
-| Technology | Purpose |
-|------------|---------|
-| Java 17 | Programming language |
-| Spring Boot 3.2 | Application framework |
-| Spring Security | Authentication & Authorization |
-| JWT (jjwt 0.11.5) | Stateless token-based auth |
-| Spring Data JPA | ORM / Database access |
-| H2 Database | In-memory DB for development |
-| MySQL | Production database |
-| Lombok | Reduce boilerplate code |
-| Swagger/OpenAPI | API documentation |
-| Maven | Build tool & dependency management |
+- **Swagger/OpenAPI**
+  Documentation is enabled and configured via `src/main/java/com/banking/config/SwaggerConfig.java`.
 
 ---
+
+## Contributing
+
+Contributions are welcome! To propose enhancements or fixes:
+
+- Fork the repository.
+- Create a feature branch.
+- Commit your changes.
+- Open a pull request describing your changes.
+
+> [!CAUTION]
+> Ensure that all new features include relevant tests and documentation updates.
+
+---
+
+## License
+
+This repository is licensed under the [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0) license.
 
 ## 👤 Author and Developed by
 **Sanoj Kumar Kushwaha**  
@@ -249,6 +233,3 @@ spring.datasource.password=your_password
 GitHub: https://github.com/sanojkushwaha
 
 ---
-
-## 📄 License
-This project is open source and available under the [MIT License](LICENSE).
