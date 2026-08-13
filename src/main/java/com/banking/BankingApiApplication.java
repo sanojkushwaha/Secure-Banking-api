@@ -3,16 +3,7 @@ package com.banking;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-/**
- * ╔══════════════════════════════════════════╗
- * ║     Banking & Finance REST API           ║
- * ║     Built with Spring Boot 3 + JWT       ║
- * ╚══════════════════════════════════════════╝
- *
- * Swagger UI  → http://localhost:8080/swagger-ui.html
- * H2 Console  → http://localhost:8080/h2-console
- * API Docs    → http://localhost:8080/api-docs
- */
+
 @SpringBootApplication
 public class BankingApiApplication {
 
